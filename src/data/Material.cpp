@@ -10,7 +10,7 @@ Material::Material(const QUuid& uuid, Project* project)
 	: Item(uuid, project) {}
 
 Material::~Material() {
-	setTexture(nullptr);
+	setDiffuseMap(nullptr);
 }
 
 void Material::setName(const QString& name) {
@@ -29,17 +29,17 @@ void Material::setDiffuse(const QColor& color) {
 	}
 }
 
-void Material::setTexture(Texture* texture) {
-	if (_texture != texture) {
+void Material::setDiffuseMap(Texture* diffuseMap) {
+	if (_diffuseMap != diffuseMap) {
 		// Refcount
-		if (_texture)
-			_texture->decreaseRefCount();
-		if (texture)
-			texture->increaseRefCount();
+		if (_diffuseMap)
+			_diffuseMap->decreaseRefCount();
+		if (diffuseMap)
+			diffuseMap->increaseRefCount();
 
-		_texture = texture;
+		_diffuseMap = diffuseMap;
 		_project->setIsModified(true);
-		emit textureUpdated();
+		emit diffuseMapUpdated();
 	}
 }
 } // namespace eno

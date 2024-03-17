@@ -85,7 +85,7 @@ void Project::datasUpdated(const QList<Texture*>& datas) {
 void Project::clear() {
 	// Materials
 	for (auto* data : Container<Material, Project>::_datas) {
-		data->setTexture(nullptr);
+		data->setDiffuseMap(nullptr);
 	}
 	Container<Material, Project>::clear();
 

@@ -51,7 +51,10 @@ void Eno::save() {
 			if (isInterruptionRequested()) {
 				break;
 			}
-			stream << texture->uuid() << texture->name() << texture->size() << texture->data();
+			stream << texture->uuid();
+			stream << texture->name();
+			stream << texture->size();
+			stream << texture->data();
 		}
 	}
 
@@ -64,7 +67,10 @@ void Eno::save() {
 			if (isInterruptionRequested()) {
 				break;
 			}
-			stream << material->uuid() << material->name() << material->diffuse() << (material->texture() ? material->texture()->uuid() : QUuid());
+			stream << material->uuid();
+			stream << material->name();
+			stream << material->diffuse();
+			stream << (material->diffuseMap() ? material->diffuseMap()->uuid() : QUuid());
 		}
 	}
 
@@ -83,7 +89,9 @@ void Eno::save() {
 			if (isInterruptionRequested()) {
 				break;
 			}
-			stream << object->uuid() << object->position() << object->material()->uuid();
+			stream << object->uuid();
+			stream << object->position();
+			stream << object->material()->uuid();
 		}
 	}
 
@@ -172,7 +180,10 @@ void Eno::load() {
 				QString name;
 				QSize size;
 				QByteArray data;
-				stream >> uuid >> name >> size >> data;
+				stream >> uuid;
+				stream >> name;
+				stream >> size;
+				stream >> data;
 
 				// Create texture
 				auto* texture = new Texture(uuid, _project);
@@ -199,17 +210,18 @@ void Eno::load() {
 				QString name;
 				QColor diffuse;
 				QUuid tUuid;
+				stream >> uuid;
+				stream >> name;
+				stream >> diffuse;
 				if (version > 3)
-					stream >> uuid >> name >> diffuse >> tUuid;
-				else
-					stream >> uuid >> name >> diffuse;
+					stream >> tUuid;
 
 				// Create material
 				auto* material = new Material(uuid, _project);
 				material->setName(name);
 				material->setDiffuse(diffuse);
 				if (version > 3 && !tUuid.isNull()) {
-					material->setTexture(textureLinks.value(tUuid));
+					material->setDiffuseMap(textureLinks.value(tUuid));
 				}
 				materials.append(material);
 				materialLinks.insert(uuid, material);
@@ -239,11 +251,10 @@ void Eno::load() {
 				QUuid uuid;
 				QVector3D pos;
 				QUuid mUuid;
-				if (version > 1) {
-					stream >> uuid >> pos >> mUuid;
-				} else {
-					stream >> pos >> mUuid;
-				}
+				if (version > 1)
+					stream >> uuid;
+				stream >> pos;
+				stream >> mUuid;
 
 				// Create object
 				Object* object = nullptr;
