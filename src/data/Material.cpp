@@ -11,6 +11,7 @@ Material::Material(const QUuid& uuid, Project* project)
 
 Material::~Material() {
 	setDiffuseMap(nullptr);
+	setOpacityMap(nullptr);
 }
 
 void Material::setName(const QString& name) {
@@ -40,6 +41,28 @@ void Material::setDiffuseMap(Texture* diffuseMap) {
 		_diffuseMap = diffuseMap;
 		_project->setIsModified(true);
 		emit diffuseMapUpdated();
+	}
+}
+
+void Material::setOpacity(float opacity) {
+	if (_opacity != opacity) {
+		_opacity = opacity;
+		_project->setIsModified(true);
+		emit opacityUpdated();
+	}
+}
+
+void Material::setOpacityMap(Texture* opacityMap) {
+	if (_opacityMap != opacityMap) {
+		// Refcount
+		if (_opacityMap)
+			_opacityMap->decreaseRefCount();
+		if (opacityMap)
+			opacityMap->increaseRefCount();
+
+		_opacityMap = opacityMap;
+		_project->setIsModified(true);
+		emit opacityMapUpdated();
 	}
 }
 } // namespace eno

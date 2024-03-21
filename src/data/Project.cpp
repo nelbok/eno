@@ -86,6 +86,7 @@ void Project::clear() {
 	// Materials
 	for (auto* data : Container<Material, Project>::_datas) {
 		data->setDiffuseMap(nullptr);
+		data->setOpacityMap(nullptr);
 	}
 	Container<Material, Project>::clear();
 

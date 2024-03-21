@@ -16,6 +16,8 @@ class Material : public Item {
 	Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameUpdated)
 	Q_PROPERTY(QColor diffuse READ diffuse WRITE setDiffuse NOTIFY diffuseUpdated)
 	Q_PROPERTY(Texture* diffuseMap READ diffuseMap WRITE setDiffuseMap NOTIFY diffuseMapUpdated)
+	Q_PROPERTY(float opacity READ opacity WRITE setOpacity NOTIFY opacityUpdated)
+	Q_PROPERTY(Texture* opacityMap READ opacityMap WRITE setOpacityMap NOTIFY opacityMapUpdated)
 
 public:
 	Material(Project* project);
@@ -31,16 +33,26 @@ public:
 
 	Texture* diffuseMap() const { return _diffuseMap; }
 	void setDiffuseMap(Texture* diffuseMap);
+
+	float opacity() const { return _opacity; }
+	void setOpacity(float opacity);
+
+	Texture* opacityMap() const { return _opacityMap; }
+	void setOpacityMap(Texture* opacityMap);
 	// clang-format on
 
 private:
 	QString _name{};
 	QColor _diffuse{};
-	Texture* _diffuseMap{};
+	Texture* _diffuseMap{ nullptr };
+	float _opacity{ 1.0 };
+	Texture* _opacityMap{ nullptr };
 
 signals:
 	void nameUpdated();
 	void diffuseUpdated();
 	void diffuseMapUpdated();
+	void opacityUpdated();
+	void opacityMapUpdated();
 };
 } // namespace eno

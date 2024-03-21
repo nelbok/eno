@@ -71,6 +71,8 @@ void Eno::save() {
 			stream << material->name();
 			stream << material->diffuse();
 			stream << (material->diffuseMap() ? material->diffuseMap()->uuid() : QUuid());
+			stream << material->opacity();
+			stream << (material->opacityMap() ? material->opacityMap()->uuid() : QUuid());
 		}
 	}
 
@@ -209,19 +211,30 @@ void Eno::load() {
 				QUuid uuid;
 				QString name;
 				QColor diffuse;
-				QUuid tUuid;
+				QUuid diffuseUuid;
+				float opacity;
+				QUuid opacityUuid;
 				stream >> uuid;
 				stream >> name;
 				stream >> diffuse;
 				if (version > 3)
-					stream >> tUuid;
+					stream >> diffuseUuid;
+				if (version > 4) {
+					stream >> opacity;
+					stream >> opacityUuid;
+				}
 
 				// Create material
 				auto* material = new Material(uuid, _project);
 				material->setName(name);
 				material->setDiffuse(diffuse);
-				if (version > 3 && !tUuid.isNull()) {
-					material->setDiffuseMap(textureLinks.value(tUuid));
+				if (version > 3 && !diffuseUuid.isNull()) {
+					material->setDiffuseMap(textureLinks.value(diffuseUuid));
+				}
+				if (version > 4) {
+					material->setOpacity(opacity);
+					if (!opacityUuid.isNull())
+						material->setOpacityMap(textureLinks.value(opacityUuid));
 				}
 				materials.append(material);
 				materialLinks.insert(uuid, material);
