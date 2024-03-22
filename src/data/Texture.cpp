@@ -30,9 +30,13 @@ QImage Texture::image() const {
 void Texture::set(const QSize& size, const QByteArray& data) {
 	_size = size;
 	_data = data;
+	_invertX = false;
+	_invertY = false;
 	_project->setIsModified(true);
 	emit sizeUpdated();
 	emit dataUpdated();
+	emit invertXUpdated();
+	emit invertYUpdated();
 }
 
 void Texture::set(const QImage& img) {
@@ -61,6 +65,33 @@ void Texture::set(const QImage& img) {
 void Texture::set(const QPixmap& pixmap) {
 	assert(!pixmap.isNull());
 	set(pixmap.toImage());
+}
+
+void Texture::setInvertX(bool value) {
+	setInvert(value, _invertY);
+}
+
+void Texture::setInvertY(bool value) {
+	setInvert(_invertX, value);
+}
+
+void Texture::setInvert(bool invertX, bool invertY) {
+	bool invertXChanged = invertX != _invertX;
+	bool invertYChanged = invertY != _invertY;
+	if (invertXChanged || invertYChanged) {
+		QImage img = image();
+		img.mirror(invertXChanged, invertYChanged);
+		set(img);
+
+		_invertX = invertX;
+		_invertY = invertY;
+
+		// emit if the value changed
+		if (invertXChanged)
+			emit invertXUpdated();
+		if (invertYChanged)
+			emit invertYUpdated();
+	}
 }
 
 } // namespace eno

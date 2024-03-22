@@ -17,6 +17,8 @@ class Texture : public Item {
 	Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameUpdated)
 	Q_PROPERTY(QSize size READ size NOTIFY sizeUpdated)
 	Q_PROPERTY(QByteArray data READ data NOTIFY dataUpdated)
+	Q_PROPERTY(bool invertX READ invertX WRITE setInvertX NOTIFY invertXUpdated)
+	Q_PROPERTY(bool invertY READ invertY WRITE setInvertY NOTIFY invertYUpdated)
 
 public:
 	Texture(Project* project);
@@ -29,6 +31,14 @@ public:
 
 	const QSize& size() const { return _size; }
 	const QByteArray& data() const { return _data; }
+
+	bool invertX() const { return _invertX; }
+	void setInvertX(bool value);
+
+	bool invertY() const { return _invertY; }
+	void setInvertY(bool value);
+
+	void setInvert(bool invertX, bool invertY);
 	// clang-format on
 
 	QPixmap pixmap() const;
@@ -43,10 +53,14 @@ private:
 	QString _name{};
 	QSize _size{};
 	QByteArray _data{};
+	bool _invertX{ false };
+	bool _invertY{ false };
 
 signals:
 	void nameUpdated();
 	void sizeUpdated();
 	void dataUpdated();
+	void invertXUpdated();
+	void invertYUpdated();
 };
 } // namespace eno
