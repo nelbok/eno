@@ -55,6 +55,8 @@ void Eno::save() {
 			stream << texture->name();
 			stream << texture->size();
 			stream << texture->data();
+			stream << texture->invertX();
+			stream << texture->invertY();
 		}
 	}
 
@@ -182,15 +184,28 @@ void Eno::load() {
 				QString name;
 				QSize size;
 				QByteArray data;
+				bool invertX{ false };
+				bool invertY{ false };
 				stream >> uuid;
 				stream >> name;
 				stream >> size;
 				stream >> data;
+				if (version > 5) {
+					stream >> invertX;
+					stream >> invertY;
+				}
 
 				// Create texture
 				auto* texture = new Texture(uuid, _project);
 				texture->setName(name);
 				texture->set(size, data);
+				if (version > 5) {
+					auto img = texture->image();
+					img.mirror(invertX, invertY);
+					texture->set(img);
+					texture->setInvertX(invertX);
+					texture->setInvertY(invertY);
+				}
 				textures.append(texture);
 				textureLinks.insert(uuid, texture);
 			}
@@ -212,7 +227,7 @@ void Eno::load() {
 				QString name;
 				QColor diffuse;
 				QUuid diffuseUuid;
-				float opacity;
+				float opacity{1.0};
 				QUuid opacityUuid;
 				stream >> uuid;
 				stream >> name;
