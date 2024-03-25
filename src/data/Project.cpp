@@ -74,6 +74,26 @@ void Project::remove(const QStringList& tags) {
 	emit tagsUpdated(_tags);
 }
 
+// FIXME
+QList<QObject*> Project::materialsObj() const {
+	const auto& in = Container<Material, Project>::datas();
+	QList<QObject*> out;
+	for (auto* d : in) {
+		out.append(d);
+	}
+	return out;
+}
+
+// FIXME
+QList<QObject*> Project::texturesObj() const {
+	const auto& in = Container<Texture, Project>::datas();
+	QList<QObject*> out;
+	for (auto* d : in) {
+		out.append(d);
+	}
+	return out;
+}
+
 void Project::datasUpdated(const QList<Material*>& datas) {
 	emit materialsUpdated(datas);
 }

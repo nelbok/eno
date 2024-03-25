@@ -20,8 +20,8 @@ class Project
 	Q_PROPERTY(QString filePath READ filePath WRITE setFilePath NOTIFY filePathUpdated)
 	Q_PROPERTY(bool isModified READ isModified WRITE setIsModified NOTIFY isModifiedUpdated)
 	Q_PROPERTY(QStringList tags READ tags NOTIFY tagsUpdated)
-	Q_PROPERTY(QList<Material*> materials READ materials NOTIFY materialsUpdated)
-	Q_PROPERTY(QList<Texture*> textures READ textures NOTIFY texturesUpdated)
+	Q_PROPERTY(QList<QObject*> materials READ materialsObj NOTIFY materialsUpdated)
+	Q_PROPERTY(QList<QObject*> textures READ texturesObj NOTIFY texturesUpdated)
 	Q_PROPERTY(Scene* scene READ scene CONSTANT)
 
 public:
@@ -49,11 +49,13 @@ public:
 	using Container<Material, Project>::canRemove;
 	using Container<Material, Project>::remove;
 	inline QList<Material*> materials() const { return Container<Material, Project>::datas(); }
+	QList<QObject*> materialsObj() const; // FIXME
 
 	using Container<Texture, Project>::add;
 	using Container<Texture, Project>::canRemove;
 	using Container<Texture, Project>::remove;
 	inline QList<Texture*> textures() const { return Container<Texture, Project>::datas(); }
+	QList<QObject*> texturesObj() const; // FIXME
 
 	Scene* scene() { return _scene; }
 	const Scene* scene() const { return _scene; }
