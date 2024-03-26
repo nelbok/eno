@@ -147,16 +147,14 @@ void Eno::load() {
 
 	try {
 		// Read project
-		if (version > 1) {
+		{
 			QString name;
 			stream >> name;
 			_project->setName(name);
-		} else {
-			_project->setName("Unknown");
 		}
 
 		// Read tags
-		if (version > 2) {
+		{
 			int nb = 0;
 			stream >> nb;
 			for (int i = 0; i < nb; ++i) {
@@ -171,7 +169,7 @@ void Eno::load() {
 
 		// Read textures
 		QMap<QUuid, Texture*> textureLinks;
-		if (version > 3) {
+		{
 			int nb = 0;
 			stream >> nb;
 			QList<Texture*> textures;
@@ -190,22 +188,18 @@ void Eno::load() {
 				stream >> name;
 				stream >> size;
 				stream >> data;
-				if (version > 5) {
-					stream >> invertX;
-					stream >> invertY;
-				}
+				stream >> invertX;
+				stream >> invertY;
 
 				// Create texture
 				auto* texture = new Texture(uuid, _project);
 				texture->setName(name);
 				texture->set(size, data);
-				if (version > 5) {
-					auto img = texture->image();
-					img.mirror(invertX, invertY);
-					texture->set(img);
-					texture->setInvertX(invertX);
-					texture->setInvertY(invertY);
-				}
+				auto img = texture->image();
+				img.mirror(invertX, invertY);
+				texture->set(img);
+				texture->setInvertX(invertX);
+				texture->setInvertY(invertY);
 				textures.append(texture);
 				textureLinks.insert(uuid, texture);
 			}
@@ -227,30 +221,25 @@ void Eno::load() {
 				QString name;
 				QColor diffuse;
 				QUuid diffuseUuid;
-				float opacity{1.0};
+				float opacity{ 1.0 };
 				QUuid opacityUuid;
 				stream >> uuid;
 				stream >> name;
 				stream >> diffuse;
-				if (version > 3)
-					stream >> diffuseUuid;
-				if (version > 4) {
-					stream >> opacity;
-					stream >> opacityUuid;
-				}
+				stream >> diffuseUuid;
+				stream >> opacity;
+				stream >> opacityUuid;
 
 				// Create material
 				auto* material = new Material(uuid, _project);
 				material->setName(name);
 				material->setDiffuse(diffuse);
-				if (version > 3 && !diffuseUuid.isNull()) {
+				if (!diffuseUuid.isNull()) {
 					material->setDiffuseMap(textureLinks.value(diffuseUuid));
 				}
-				if (version > 4) {
-					material->setOpacity(opacity);
-					if (!opacityUuid.isNull())
-						material->setOpacityMap(textureLinks.value(opacityUuid));
-				}
+				material->setOpacity(opacity);
+				if (!opacityUuid.isNull())
+					material->setOpacityMap(textureLinks.value(opacityUuid));
 				materials.append(material);
 				materialLinks.insert(uuid, material);
 			}
@@ -279,18 +268,13 @@ void Eno::load() {
 				QUuid uuid;
 				QVector3D pos;
 				QUuid mUuid;
-				if (version > 1)
-					stream >> uuid;
+				stream >> uuid;
 				stream >> pos;
 				stream >> mUuid;
 
 				// Create object
 				Object* object = nullptr;
-				if (version > 1) {
-					object = new Object(uuid, _project);
-				} else {
-					object = new Object(_project);
-				}
+				object = new Object(uuid, _project);
 				object->setPosition(pos);
 				object->setMaterial(materialLinks.value(mUuid));
 				objects.append(object);

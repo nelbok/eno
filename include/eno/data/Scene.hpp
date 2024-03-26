@@ -1,10 +1,9 @@
 #pragma once
 
-#include <QtCore/QMap>
 #include <QtCore/QObject>
 #include <QtCore/QPoint>
-#include <QtGui/QVector3D>
 
+#include <eno/data/Container.hpp>
 #include <eno/data/Object.hpp>
 
 namespace eno {
