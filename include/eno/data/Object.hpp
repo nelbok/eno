@@ -11,7 +11,6 @@ namespace eno {
 class Project;
 
 class Object : public Item {
-
 	Q_OBJECT
 	Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionUpdated)
 	Q_PROPERTY(Material* material READ material WRITE setMaterial NOTIFY materialUpdated)

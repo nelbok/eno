@@ -56,6 +56,7 @@ public:
 			assert(data);
 			assert(!_datas.contains(data));
 			QObject::connect(data, &Item::isAliveUpdated, _project, [this]() {
+				_project->setIsModified(true);
 				datasUpdated(this->datas());
 			});
 		}
