@@ -204,7 +204,7 @@ QByteArray createCuboidVertexData(const QVector3D& position, PlaneNormal faces) 
 	constexpr int nbVerticesByFace = 4;
 	int verticeCount = detail::nbVisibleFaces(faces) * nbVerticesByFace;
 	QByteArray vertexBytes;
-	vertexBytes.resize(verticeCount * stride());
+	vertexBytes.resize(static_cast<qsizetype>(verticeCount) * stride());
 	float* vertices = reinterpret_cast<float*>(vertexBytes.data());
 	if ((*faces & *PlaneNormal::PositiveX) == *PlaneNormal::PositiveX) {
 		detail::createPlaneVertexData(PlaneNormal::PositiveX, position, vertices);
